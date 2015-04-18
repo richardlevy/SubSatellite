@@ -1,0 +1,11 @@
+{
+  "name": "SubSatellite",
+  "description": "A satellite receiver for Subsonic",
+  "author": "Richard Levy <about@avsubapp.co.uk>",
+  "dependencies": {
+    "express": "4.1.x",
+    "rateLimit": "0.0.x",
+    "speaker": "0.2.x"
+  },
+  "engine": "node = 0.10.x"
+}
