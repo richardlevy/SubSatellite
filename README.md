@@ -12,6 +12,8 @@ Clients with SubSatellite support are:
 
 * AVSub - http://www.avsubapp.co.uk
 
+See http://www.avsubapp.co.uk/subSatellite for further details.
+
 ## Installation
 
 Will add soon...
