@@ -10,7 +10,7 @@ SubSatellite is controlled using a REST API that is based on the SubSonic Jukebo
 
 Clients with SubSatellite support are:
 
-* AVSub - http://www.avsubapp.co.uk
+* AVSub (iOS) - http://www.avsubapp.co.uk
 
 See http://www.avsubapp.co.uk/subSatellite for further details.
 
