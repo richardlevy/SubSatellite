@@ -14,6 +14,8 @@ Clients with SubSatellite support are:
 
 See http://www.avsubapp.co.uk/subSatellite for further details.
 
+SubSatellite uses a slightly modified version of Aurora.js, which can be found here - https://github.com/richardlevy/aurora.js
+
 ## Installation
 
 Will add soon...
