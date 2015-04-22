@@ -1,5 +1,6 @@
 var AV = require('./lib/AV/node.js');
 require('./lib/flac.js');
+require('./lib/AV/mp3.js');
 var express = require('express');
 var app = express();
 var config = require('./config.js');
@@ -8,6 +9,9 @@ var currentPlayer;
 var currentPlayingIndex=0;
 var nextPlayer;
 var currentVolume = 75;
+
+var fakePausePosition=0;
+var isCurrentFakePaused=false;
 
 var playlist = [];
 
@@ -22,6 +26,11 @@ var debug=function(msg){
 
 var info=function(msg){
   console.log(msg);
+}
+
+var resetFakePause=function(){
+  fakePausePosition=0;
+  isCurrentFakePaused=false;
 }
 
 var createCurrentPlayer = function (url){
@@ -55,6 +64,7 @@ var createCurrentPlayer = function (url){
 }
 
 var createNextPlayer = function (url){
+  return;
   debug ('Creating next player for URL ' + url);
 
   var asset = new AV.Asset.fromLimitedURL(url, config.bpsRateLimit);
@@ -104,14 +114,29 @@ var moveToNextTrack = function(){
 
 var processPause = function(){
   if (currentPlayer && currentPlayer.playing){
-    currentPlayer.pause();
+    if (config.fakePause){
+      // fakePausePosition = currentPlayer.currentTime;
+      fakePausePosition = 0;
+      isCurrentFakePaused=true;
+      destroyCurrentPlayer();
+    } else {
+      currentPlayer.pause();
+    }
   }
   return createStatus();
 }
 
 var processResume = function(){
-  if (currentPlayer && !currentPlayer.playing){
-    currentPlayer.start();
+  if (config.fakePause){
+      createCurrentPlayer(makeURL(playlist[currentPlayingIndex]));
+      //info("Seeking to " + fakePausePosition);
+      //currentPlayer.seek(fakePausePosition)
+      currentPlayer.play();
+      isCurrentFakePaused=false;
+  } else {
+    if (currentPlayer && !currentPlayer.playing){
+      currentPlayer.start();
+    }
   }
   return createStatus();
 }
@@ -125,6 +150,7 @@ var processGain = function(gain){
 }
 
 var processSkip = function(index, offset){
+  resetFakePause();
   if (index < playlist.length) {
     var nextPlayerIndex = Number(currentPlayingIndex)+1;
 
@@ -141,7 +167,8 @@ var processSkip = function(index, offset){
       startMusic();
     }
     if (offset){
-      debug("[Unsupported] Offset of  - " + offset);
+      debug("Seeking to offset - " + offset);
+      //currentPlayer.seek(offset*1000);
     }
 
   }
@@ -180,7 +207,6 @@ var destroyPlayer = function(player){
   if (player){
     try {
       debug("Stopping/destroying");
-      player.pause();
       player.stop();      
     } catch (err){
       // console.log ("Cannot close player - probably already destroyed");
@@ -204,13 +230,21 @@ var startMusic = function(){
 }
 
 var processStart = function(){
-  if (!currentPlayer){
-    debug("Creating player");
-    startMusic();    
+  if (config.fakePause && isCurrentFakePaused){
+      createCurrentPlayer(makeURL(playlist[currentPlayingIndex]));
+      //debug("Seeking to " + fakePausePosition);
+      //currentPlayer.seek(fakePausePosition)
+      currentPlayer.play();
   } else {
-    debug("Starting existing player");
-    currentPlayer.play();
+   if (!currentPlayer){
+      debug("Creating player");
+      startMusic();    
+    } else {
+      debug("Starting existing player");
+      currentPlayer.play();
+    }
   }
+  resetFakePause();
   return createStatus();
 }
 
@@ -220,6 +254,7 @@ var makeURL = function(id){
 
 // Set playlist
 var processSet = function (id){
+  resetFakePause();
   // Set initialises the playlist
   playlist=[];
   if (id.constructor == Array){
@@ -246,7 +281,11 @@ var createStatus = function (msgType){
   var currentTime=0;
   if (currentPlayer){
     currentIndex=currentPlayingIndex;
-    playing=currentPlayer.playing;
+    if (config.fakePause){
+      playing=!isCurrentFakePaused;
+    } else {
+      playing=currentPlayer.playing;
+    }
     gain = currentPlayer.volume/100;
     currentTime = Math.floor(currentPlayer.currentTime/1000);
   }

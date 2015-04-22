@@ -32,6 +32,7 @@ Will add soon...
 
 This project is a minimum viable prototype.  It has the following limitations:
 
-* Only support FLAC/WAV
+* Full support FLAC/WAV
+* Limited MP3 support (investigating this)
 * Issue with pause operation
 * Cannot seek within a file
