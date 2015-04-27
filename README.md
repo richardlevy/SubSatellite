@@ -38,7 +38,7 @@ Will add soon...
   * Name new player *subSatellite*
   * Disable all Active transcoding **except** *flac audio*
   * Save
-  * Ensure all existing players have *flac audio* disabled
+  * Ensure all existing players have *flac audio* transcoding disabled
 
 You are now setup.
 
