@@ -26,7 +26,16 @@ Will add soon...
 
 ## REST API
 
-Will add soon...
+```
+/rest/satelliteControl.view/status
+/rest/satelliteControl.view/set/{ids}
+/rest/satelliteControl.view/start
+/rest/satelliteControl.view/stop
+/rest/satelliteControl.view/resume
+/rest/satelliteControl.view/get
+/rest/satelliteControl.view/skip/{index}/{offset}
+/rest/satelliteControl.view/setGain/{gain}
+```
 
 ## Current Limitations
 
