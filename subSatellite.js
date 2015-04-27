@@ -51,7 +51,7 @@ var createCurrentPlayer = function (url){
   currentPlayer.on('error', function(err){
     info('Error [current] = ' + err + " - recreating player");
     currentPlayer=null;
-    createCurrentPlayer(makeURL(playlist[currentPlayingIndex]));
+    //createCurrentPlayer(makeURL(playlist[currentPlayingIndex]));
   } );
 
   currentPlayer.on('ready', function(){
@@ -64,7 +64,6 @@ var createCurrentPlayer = function (url){
 }
 
 var createNextPlayer = function (url){
-  return;
   debug ('Creating next player for URL ' + url);
 
   var asset = new AV.Asset.fromLimitedURL(url, config.bpsRateLimit);
@@ -256,14 +255,7 @@ var makeURL = function(id){
 var processSet = function (id){
   resetFakePause();
   // Set initialises the playlist
-  playlist=[];
-  if (id.constructor == Array){
-    id.forEach(function(entry){
-      addToPlaylist(entry);
-    });
-  } else {
-    addToPlaylist(id);
-  }
+  playlist=id.split(",");
   info ('Playlist = ' + playlist);
   destroyCurrentPlayer();
   return createStatus();
@@ -305,35 +297,53 @@ var showInfo = function() {
   info("SubSatellite started and waiting on port " + config.port + "....");
 }
 
-app.get('/rest/satelliteControl.view', function(req, res) {
-  var xmlResponse=null;
-  if (req.query){
-    var action = req.query.action;
-    if (action){
-      debug ("ACTION = " + action);
-      if (action=='status') {
-        xmlResponse = createStatus();
-      } else if (action=='set'){
-        xmlResponse = processSet(req.query.id);
-      } else if (action=='start'){
-        xmlResponse = processStart();
-      } else if (action=='stop'){
-        xmlResponse = processPause();
-      } else if (action=='resume'){
-        xmlResponse = processResume();
-      } else if (action=='get'){
-        xmlResponse = processGet();
-      } else if (action=='skip'){
-        xmlResponse = processSkip(req.query.index, req.query.offset);
-      } else if (action=='setGain'){
-        xmlResponse = processGain(req.query.gain);
-      } else {
-        debug ("Unrecognised command " + action);
-      }
-    }
-  }
-  res.type('application/xml'); // set content-type
-  res.send(xmlResponse); // send text response
+app.get('/rest/satelliteControl.view/status', function(req, res) {
+  var xmlResponse = createStatus();
+  res.type('application/xml'); 
+  res.send(xmlResponse); 
+});
+
+app.get('/rest/satelliteControl.view/set/:id', function(req, res) {
+  info("Playlist = " + req.params.id);
+  var xmlResponse = processSet(req.params.id);
+  res.type('application/xml'); 
+  res.send(xmlResponse); 
+});
+
+app.get('/rest/satelliteControl.view/start', function(req, res) {
+  var xmlResponse = processStart();
+  res.type('application/xml'); 
+  res.send(xmlResponse); 
+});
+
+app.get('/rest/satelliteControl.view/stop', function(req, res) {
+  var xmlResponse = processPause();
+  res.type('application/xml'); 
+  res.send(xmlResponse); 
+});
+
+app.get('/rest/satelliteControl.view/resume', function(req, res) {
+  var xmlResponse = processResume();
+  res.type('application/xml'); 
+  res.send(xmlResponse); 
+});
+
+app.get('/rest/satelliteControl.view/get', function(req, res) {
+  var xmlResponse = processGet();
+  res.type('application/xml'); 
+  res.send(xmlResponse); 
+});
+
+app.get('/rest/satelliteControl.view/skip/:index/:offset', function(req, res) {
+  var xmlResponse = processSkip(req.params.index, req.params.offset);
+  res.type('application/xml'); 
+  res.send(xmlResponse); 
+});
+
+app.get('/rest/satelliteControl.view/setGain/:gain', function(req, res) {
+  var xmlResponse = processGain(req.params.gain);
+  res.type('application/xml'); 
+  res.send(xmlResponse); 
 });
 
 app.listen(process.env.PORT || config.port);
