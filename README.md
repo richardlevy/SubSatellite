@@ -12,7 +12,7 @@ Clients with SubSatellite support are:
 
 * AVSub (iOS) - http://www.avsubapp.co.uk
 
-See http://www.avsubapp.co.uk/subSatellite for further details.
+See http://www.avsubapp.co.uk/subSatellite.html for further details.
 
 SubSatellite uses a slightly modified version of Aurora.js, which can be found here - https://github.com/richardlevy/aurora.js
 
@@ -33,6 +33,7 @@ Will add soon...
   * Convert from = *mp3 ogg oga aac m4a wav wma aif aiff ape mpc shn*
   * Convert to = *flac*
   * Step 1 = *ffmpeg -i %s -f flac -*
+  * **Untick** *Enable this transcoding for all existing and new players*
 * Setup SubSatellite Player (Settings > Players)
   * Clone an existing player
   * Name new player *subSatellite*

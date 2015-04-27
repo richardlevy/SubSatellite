@@ -9,4 +9,5 @@ config.subsonic = {
 config.port=4141;
 config.bpsRateLimit = 716800;
 config.fakePause=true;
-config.debug=true;
+config.debug=false;
+config.useNextPlayer=false;

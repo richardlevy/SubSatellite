@@ -1,13 +1,12 @@
 var AV = require('./lib/AV/node.js');
 require('./lib/flac.js');
-require('./lib/AV/mp3.js');
 var express = require('express');
 var app = express();
 var config = require('./config.js');
 
 var currentPlayer;
+var nextPlayer=null;
 var currentPlayingIndex=0;
-var nextPlayer;
 var currentVolume = 75;
 
 var fakePausePosition=0;
@@ -64,6 +63,11 @@ var createCurrentPlayer = function (url){
 }
 
 var createNextPlayer = function (url){
+  if (!config.useNextPlayer){
+    debug ("Not using next player");
+    return;
+  }
+
   debug ('Creating next player for URL ' + url);
 
   var asset = new AV.Asset.fromLimitedURL(url, config.bpsRateLimit);
@@ -90,7 +94,6 @@ var createNextPlayer = function (url){
   });
 
 }
-
 var currentTrackFinished = function(){
   moveToNextTrack();
 }
@@ -107,6 +110,12 @@ var moveToNextTrack = function(){
     // If there's another track, queue it up
     if (Number(currentPlayingIndex)+1 < playlist.length) {
       createNextPlayer(makeURL(playlist[Number(currentPlayingIndex)+1]));
+    }
+  } else {
+    debug("Not using next player")
+    if (Number(currentPlayingIndex)+1 < playlist.length) {
+      currentPlayingIndex++;
+      startMusic();
     }
   }
 }
@@ -128,8 +137,6 @@ var processPause = function(){
 var processResume = function(){
   if (config.fakePause){
       createCurrentPlayer(makeURL(playlist[currentPlayingIndex]));
-      //info("Seeking to " + fakePausePosition);
-      //currentPlayer.seek(fakePausePosition)
       currentPlayer.play();
       isCurrentFakePaused=false;
   } else {
@@ -166,8 +173,7 @@ var processSkip = function(index, offset){
       startMusic();
     }
     if (offset){
-      debug("Seeking to offset - " + offset);
-      //currentPlayer.seek(offset*1000);
+      debug ("Seek not supported");
     }
 
   }
@@ -298,49 +304,56 @@ var showInfo = function() {
 }
 
 app.get('/rest/satelliteControl.view/status', function(req, res) {
+  debug("status");
   var xmlResponse = createStatus();
   res.type('application/xml'); 
   res.send(xmlResponse); 
 });
 
 app.get('/rest/satelliteControl.view/set/:id', function(req, res) {
-  info("Playlist = " + req.params.id);
+  info("set Playlist = " + req.params.id);
   var xmlResponse = processSet(req.params.id);
   res.type('application/xml'); 
   res.send(xmlResponse); 
 });
 
 app.get('/rest/satelliteControl.view/start', function(req, res) {
+  debug("start");
   var xmlResponse = processStart();
   res.type('application/xml'); 
   res.send(xmlResponse); 
 });
 
 app.get('/rest/satelliteControl.view/stop', function(req, res) {
+  debug("stop");
   var xmlResponse = processPause();
   res.type('application/xml'); 
   res.send(xmlResponse); 
 });
 
 app.get('/rest/satelliteControl.view/resume', function(req, res) {
+  debug("resume");
   var xmlResponse = processResume();
   res.type('application/xml'); 
   res.send(xmlResponse); 
 });
 
 app.get('/rest/satelliteControl.view/get', function(req, res) {
+  debug("get");
   var xmlResponse = processGet();
   res.type('application/xml'); 
   res.send(xmlResponse); 
 });
 
 app.get('/rest/satelliteControl.view/skip/:index/:offset', function(req, res) {
+  debug("skip");
   var xmlResponse = processSkip(req.params.index, req.params.offset);
   res.type('application/xml'); 
   res.send(xmlResponse); 
 });
 
 app.get('/rest/satelliteControl.view/setGain/:gain', function(req, res) {
+  debug("setGain");
   var xmlResponse = processGain(req.params.gain);
   res.type('application/xml'); 
   res.send(xmlResponse); 
