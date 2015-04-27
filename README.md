@@ -20,9 +20,26 @@ SubSatellite uses a slightly modified version of Aurora.js, which can be found h
 
 Will add soon...
 
+### Config.js
+
+* Configure username and password details for your SubSatellite user (see SubSubic setup)
+* Configure IP address (including port) of your SubSonic server
+
 ## SubSonic Setup
 
-Will add soon...
+* Create a user in Subsonic for SubSatellite (put these details into config.js in SubSatellite)
+* Add a new transcoder (Settings > Transcoding)
+* * Name = flac audio
+* * Convert from = mp3 ogg oga aac m4a wav wma aif aiff ape mpc shn
+* * Convert to = flac
+* * Step 1 = ffmpeg -i %s -f flac -
+* Setup SubSatellite Player (Settings > Players)
+* * Clone an existing player
+* * Name new player subSatellite
+* * Disable all Active transcoding **except** flac audio
+* * Save
+
+You are now setup.
 
 ## REST API
 
