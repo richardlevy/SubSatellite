@@ -59,7 +59,8 @@ You are now setup.
 
 This project is a minimum viable prototype.  It has the following limitations:
 
-* Full support FLAC/WAV
-* Limited MP3 support (investigating this)
-* Issue with pause operation
+* Full direct support for FLAC
+  * This is why everything is transcoded to FLAC in Subsonic (see SubSonic setup)
+* Limited direct MP3 support (investigating this)
+* Issue with pause operation (issue raised)
 * Cannot seek within a file
