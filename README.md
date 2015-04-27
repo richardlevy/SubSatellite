@@ -22,7 +22,7 @@ Will add soon...
 
 ### Config.js
 
-* Configure username and password details for your SubSatellite user (see SubSubic setup)
+* Configure username and password details for your SubSatellite user (see SubSonic setup)
 * Configure IP address (including port) of your SubSonic server
 
 ## SubSonic Setup
