@@ -1,5 +1,7 @@
 # SubSatellite
 
+**Note:** This version of SubSatellite has been superseded by a new Java version - https://github.com/richardlevy/SubSatelliteJava
+
 A light-weight satellite receiver for Subsonic.  
 
 SubSonic jukebox mode allows you to play music direct on the server hardware.  This is great if your server is hooked up to a sound system, but if it isn't then playing your SubSonic music through your sound system means installing a separate server.
@@ -43,7 +45,7 @@ Will add soon...
 
 You are now setup.
 
-## REST API
+## REST API 0.1
 
 ```
 /rest/satelliteControl.view/status
